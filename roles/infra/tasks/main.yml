@@ -1,0 +1,79 @@
+# tasks file for myapp_infra
+  # - name: create ec2 keypair
+  # - name: create vpc
+  # - name: create vpc subnets (maybe this should be in in the autoscale part?)
+  # - name: create Tower security group
+  # - name: create Tower callback client security group
+  # - name: create Tower server security group
+  # - name: create tower client security group
+  # - name: launch tower instance, wait for it to launch
+
+- name: create ec2 keypair
+  ec2_key: name={{ ec2_key_pair }} region={{ region }}
+  register: ec2_key
+
+- name: create ssh keypair
+  copy: content="{{ ec2_key.key.private_key }}"
+        dest="{{ ssh_key_path }}/{{ ec2_key_pair }}"
+        mode=0600
+  when: ec2_key.key.private_key is defined
+
+- name: create vpc
+  ec2_vpc:
+    state: present
+    cidr_block: "{{ cidr_block }}"
+    resource_tags: { "Name": "Ansible Tower Demo" }
+    subnets: "{{ vpc_subnets }}"       
+    internet_gateway: True
+    route_tables: "{{ route_tables }}"
+    region: "{{ region }}"
+    wait: yes
+  register: vpc
+
+- name: create tower callback security group
+  ec2_group:
+    name: tower_demo_callback_client
+    description: Ansible managed servers who need callback access should be members of this group.
+    region: "{{ region }}"
+    vpc_id: "{{ vpc.vpc_id }}"
+  tags: security_groups
+  register: callback_sec_group
+
+- name: create tower server security group
+  ec2_group:
+    name: tower_demo_server
+    description: Ansible managed servers who need callback access should be members of this group.
+    region: "{{ region }}"
+    vpc_id: "{{ vpc.vpc_id }}"
+    rules: "{{ tower_server_sec_group_rules }}"
+  tags: security_groups
+  register: tower_demo_server_sec_group
+
+- name: create tower client security group
+  ec2_group:
+    name: tower_demo_server
+    description: Ansible managed servers who need callback access should be members of this group.
+    region: "{{ region }}"
+    vpc_id: "{{ vpc.vpc_id }}"
+    rules: "{{ tower_server_sec_group_rules }}"
+  tags: security_groups
+  register: callback_sec_group
+
+- name: launch the tower server
+  ec2:
+    key_name: "{{ ec2_key_pair }}"
+    group_id: "{{ tower_demo_server_sec_group.group_id }}"
+    instance_type: m1.large
+    image: "{{ tower_instance_ami }}"
+    wait: yes
+    count: 1
+    count_tag:
+      Name: tower-demo-server
+    instance_tags:
+      Name: tower-demo-server
+    region: "{{ region }}"
+    vpc_subnet_id: "{{ tower_subnet }}"
+    register: tower_instance
+
+- name: wait for instance to become available
+  wait_for host={{ tower_instance.public_dns_name }} port=22 delay=60 timeout=320 state=started

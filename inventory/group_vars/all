@@ -1,0 +1,22 @@
+ec2_key_pair: ansible_tower_demo
+ssh_key_path: "{{ lookup('env','HOME') }}/.ssh"
+cidr_block: 172.22.0.0/16
+vpc_subnets:
+  - cidr: 172.22.1.0/24
+    resource_tags: { "Name":"ansible-tower-demo-1" }
+    az: us-east-1b
+  - cidr: 172.22.2.0/24
+    resource_tags: { "Name":"ansible-tower-demo-2" }
+    az: us-east-1c 
+route_tables:
+  - subnets:
+      - 172.22.1.0/24
+      - 172.22.2.0/24
+    routes:
+      - dest: 0.0.0.0/0
+        gw: igw
+region: us-east-1
+authorized_tower_ip: 0.0.0.0/0
+tower_instance_type: m1.large
+tower_instance_ami: ami-d017b2b8
+tower_subnet: "{{ vpc.subnets[0].id }}"

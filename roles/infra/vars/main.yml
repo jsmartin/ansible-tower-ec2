@@ -1,0 +1,27 @@
+---
+# vars file for myapp_infra
+tower_server_sec_group_rules:
+  - proto: tcp
+    from_port: 443
+    to_port: 443
+    cidr_ip: "{{ authorized_tower_ip }}"
+  - proto: tcp
+    from_port: 8080
+    to_port: 8080
+    cidr_ip: "{{ authorized_tower_ip }}"    
+  - proto: tcp
+    from_port: 22
+    to_port: 22
+    cidr_ip: "{{ authorized_tower_ip }}"
+  - proto: tcp
+    from_port: 443
+    to_port: 443
+    group_id: "{{ callback_sec_group.group_id }}"
+
+
+tower_client_sec_group_rules:
+  - proto: tcp
+    from_port: 22
+    to_port: 22
+    group_id: "{{ tower_demo_server.group_id }}"
+
