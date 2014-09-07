@@ -20,3 +20,5 @@ authorized_tower_ip: 0.0.0.0/0
 tower_instance_type: m1.large
 tower_instance_ami: ami-d017b2b8
 tower_subnet: "{{ vpc.subnets[0].id }}"
+tower_instance_tag: tower-demo-server
+tower_public_ip: yes

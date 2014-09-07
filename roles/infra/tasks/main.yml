@@ -63,17 +63,18 @@
   ec2:
     key_name: "{{ ec2_key_pair }}"
     group_id: "{{ tower_demo_server_sec_group.group_id }}"
-    instance_type: m1.large
+    instance_type: "{{ tower_instance_type }}"
     image: "{{ tower_instance_ami }}"
+    assign_public_ip: "{{ tower_public_ip }}"
     wait: yes
-    count: 1
+    exact_count: 1
     count_tag:
-      Name: tower-demo-server
+      Name: "{{ tower_instance_tag }}"
     instance_tags:
-      Name: tower-demo-server
+      Name: "{{ tower_instance_tag }}"
     region: "{{ region }}"
     vpc_subnet_id: "{{ tower_subnet }}"
-    register: tower_instance
+  register: tower_instance
 
 - name: wait for instance to become available
-  wait_for host={{ tower_instance.public_dns_name }} port=22 delay=60 timeout=320 state=started
+  wait_for: host={{ tower_instance.tagged_instances.0.public_dns_name }} port=22 search_regex=OpenSSH timeout=320 state=started
