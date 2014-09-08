@@ -1,0 +1,11 @@
+---
+# handlers file for tower_installer
+- name: purge temporary directory
+  file: path=tower_setup/tmp state=absent
+
+- name: create temporary directory
+  file: path=tower_setup/tmp state=directory
+
+- name: extract tower_installer
+  command: tar xvf tower_setup/ansible-tower-setup.tar.gz -C tower_setup/tmp --strip-components=1
+

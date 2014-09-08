@@ -1,6 +1,10 @@
 - hosts: localhost
-  
+
   roles:
   - infra
 
-
+- hosts: tower
+  sudo: yes
+  remote_user: ubuntu
+  roles:
+  - ansible

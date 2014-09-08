@@ -1,0 +1,10 @@
+---
+- name: install deps
+  apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
+  with_items:
+  - python-pip
+  - python-dev
+  - gcc
+
+- name: install ansible 
+  pip: name=ansible version={{ ansible_ver }} state=present

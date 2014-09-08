@@ -77,4 +77,30 @@
   register: tower_instance
 
 - name: wait for instance to become available
-  wait_for: host={{ tower_instance.tagged_instances.0.public_dns_name }} port=22 search_regex=OpenSSH timeout=320 state=started
+  wait_for: 
+    host: "{{ tower_instance.tagged_instances.0.public_dns_name }}"
+    port: 22 
+    search_regex: OpenSSH 
+    timeout: 320 
+    state: started
+
+- name: add machine to tower group
+  add_host: 
+    groups: tower 
+    name: "{{ tower_instance.tagged_instances.0.public_dns_name }}"
+
+- name: modify tower installer inventory
+  copy: 
+    content: "{{ tower_instance.tagged_instances.0.public_dns_name }}"
+    dest: tower_setup/tmp/myhosts
+
+- name: comment root
+  replace: 
+    dest: tower_setup/tmp/site.yml 
+    regexp: "^  user: root" 
+    replace: "#  user: root"
+
+- name: setup tower cli config
+  template: src=tower_cli.cfg.j2 dest=./tower_cli.cfg
+
+

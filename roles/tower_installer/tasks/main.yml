@@ -1,0 +1,13 @@
+---
+# tasks file for tower_installer
+
+
+- name: fetch tower tower_installer
+  get_url:  url=http://releases.ansible.com/ansible-tower/setup/ansible-tower-setup-{{ tower_version }}.tar.gz dest=tower_setup/ansible-tower-setup.tar.gz
+  notify:
+  - purge temporary directory
+  - create temporary directory
+  - extract tower_installer
+
+#- name: extract tower_installer
+#  command: tar xvf tower_setup/archive/ansible-tower-setup.tar.gz -C tower_setup/installer --strip-components=1

@@ -22,3 +22,5 @@ tower_instance_ami: ami-d017b2b8
 tower_subnet: "{{ vpc.subnets[0].id }}"
 tower_instance_tag: tower-demo-server
 tower_public_ip: yes
+tower_version: 2.0.0
+ansible_ver: 1.7.1
