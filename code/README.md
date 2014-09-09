@@ -11,10 +11,11 @@ What does it do?
 
 1. Grabs the Tower version specified in group_vars/all
 2. Provisions a Tower instance with settings specified in group_vars/all
-3. Runs the Tower playbook against the server provisioned in #2.
+3. Populates a tower_cli.cfg.
+4. Runs the Tower playbook against the server provisioned in #2.
 
 If you want to go a step further, and actually configure Tower:
 
 1. Install tower-cli
 2. Custmoize config_tower.sh for your environment
-3. ```./config_tower.sh```
+3. run ```./config_tower.sh```
