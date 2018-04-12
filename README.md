@@ -52,9 +52,9 @@ This group is assigned to the instances that are managed by Tower.  It allows To
 
 ### Launching the Tower instance
 
-Launch a moderately sized EC2 instance -- 4GB or more memory.  Make sure it is a being launched into the VPC referenced above and is member of the Tower Server Security Group you created.  
+Launch a moderately sized EC2 instance -- 4GB or more memory.  Make sure it is being launched into the VPC referenced above and is member of the Tower Server Security Group you created.  
 
-The next step is to install Ansible and Ansible Tower onto your newly launched instance.  You can find [installation instructions here](http://releases.ansible.com/ansible-tower/docs/tower_user_guide-latest.pdf).  Once you've setup and logged into your Tower instance, proceed to the next step.
+The next step is to install Ansible and Ansible Tower onto your newly launched instance.  You can find [installation instructions here](http://releases.ansible.com/ansible-tower/docs/tower_user_guide-latest.pdf).  Once you've set up and logged into your Tower instance, proceed to the next step.
 
 Extra bonus points to the person that creates an Ansible playbook to provision the above!
 
